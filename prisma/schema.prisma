@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // 🌟 已经为你修改为云端强大的 postgresql
+  url      = env("DATABASE_URL") // 🌟 新增：从环境变量读取云端数据库的链接
+}
+
+// 任务记录表
+model Task {
+  id           String   @id @default(cuid())
+  userId       String   // 存储 Clerk 的用户 ID
+  originalTask String   // 用户输入的原始大任务
+  steps        String   // 保存 AI 生成的步骤 (我们将 JSON 转换为字符串存储)
+  createdAt    DateTime @default(now()) // 创建时间
+}
+
+// 🌟 新增：用户活动日志表 (用于生成图表)
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String   // 绑定用户
+  type      String   // 活动类型: "TASK_BREAKER" 或 "BREATHING"
+  duration  Int      // 持续时长 (秒)
+  completed Boolean  // 是否完整做完
+  createdAt DateTime @default(now())
+}
