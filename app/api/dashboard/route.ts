@@ -29,17 +29,16 @@ export async function GET() {
     // 3. 计算顶部卡片的数据
     const totalUses = logs.length;
     
-    // 把呼吸的秒数加起来，换算成分钟
+    // 🌟 修复点 1：明确告诉 TypeScript 这里的数据类型
     const totalBreathingSeconds = logs
-      .filter(log => log.type === 'BREATHING')
-      .reduce((acc, log) => acc + log.duration, 0);
+      .filter((log: any) => log.type === 'BREATHING')
+      .reduce((acc: number, log: any) => acc + log.duration, 0);
     const totalBreathingMins = Math.floor(totalBreathingSeconds / 60);
 
     // 4. 按“星期几”分组，生成图表需要的数据格式
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const chartDataMap = new Map();
 
-    // 先初始化过去 7 天的空模板，保证每天都在图表上显示
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
@@ -47,22 +46,22 @@ export async function GET() {
       chartDataMap.set(dayName, { date: dayName, tasks: 0, breathingMins: 0, completed: 0 });
     }
 
-    // 将真实数据填入对应的星期中
-    logs.forEach(log => {
+    // 🌟 修复点 2：加上 (log: any)
+    logs.forEach((log: any) => {
       const dayName = days[log.createdAt.getDay()];
       if (chartDataMap.has(dayName)) {
         const dayData = chartDataMap.get(dayName);
         if (log.type === 'TASK_BREAKER') {
           dayData.tasks += 1;
-          dayData.completed += 1; // 演示图表效果用
+          dayData.completed += 1;
         } else if (log.type === 'BREATHING') {
-          dayData.breathingMins += (log.duration / 60); // 累加分钟数
+          dayData.breathingMins += (log.duration / 60);
         }
       }
     });
 
-    // 把 Map 转换回图表需要的数组，并保留 1 位小数
-    const chartData = Array.from(chartDataMap.values()).map(d => ({
+    // 🌟 修复点 3：加上 (d: any)
+    const chartData = Array.from(chartDataMap.values()).map((d: any) => ({
       ...d,
       breathingMins: Math.round(d.breathingMins * 10) / 10
     }));
