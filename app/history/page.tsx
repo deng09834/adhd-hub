@@ -58,7 +58,7 @@ export default async function HistoryPage() {
       ) : (
         /* 任务瀑布流展示 */
         <div className="grid gap-6">
-          {tasks.map((task) => {
+          {tasks.map((task: any) => {
             // 安全地解析 JSON 字符串
             let steps: string[] = [];
             try {
