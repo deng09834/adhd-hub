@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // 🌟 已经为你修改为云端强大的 postgresql
-  url      = env("DATABASE_URL") // 🌟 新增：从环境变量读取云端数据库的链接
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // 🌟 改成了 Vercel 专属的连接池地址
+  directUrl = env("POSTGRES_URL_NON_POOLING") // 🌟 Vercel 专属的直连地址
 }
 
 // 任务记录表
@@ -16,7 +17,7 @@ model Task {
   createdAt    DateTime @default(now()) // 创建时间
 }
 
-// 🌟 新增：用户活动日志表 (用于生成图表)
+// 用户活动日志表 (用于生成图表)
 model ActivityLog {
   id        String   @id @default(cuid())
   userId    String   // 绑定用户
