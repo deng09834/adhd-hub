@@ -32,7 +32,7 @@ export default async function Navbar() {
               </Link>
               {/* Clerk 提供的极简用户头像组件 */}
               <div className="ml-2">
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
               </div>
             </>
           ) : (
